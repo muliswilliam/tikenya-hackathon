@@ -1,0 +1,21 @@
+.sidemenu {
+  max-width: 307px;
+
+  .menu-list a {
+    font-size: 18px;
+    font-weight: 500;
+    color: #118ab2;
+    background-color: #fefefe;
+    padding: 19px 45px;
+    text-align: right;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+
+    &:hover {
+      color: #118ab2;
+    }
+  }
+  .menu-list a.is-active {
+    background-color: #118ab2;
+    color: #fff;
+  }
+}
