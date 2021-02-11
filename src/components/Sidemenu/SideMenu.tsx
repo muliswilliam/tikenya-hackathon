@@ -11,12 +11,16 @@ export interface MenuItem {
 export interface MenuProps {
   menuItems: MenuItem[];
   activeMenuItem: number;
+  changeActiveMenuItem: Function;
 }
+
+export interface State {}
 
 export class SideMenu extends Component<MenuProps, State> {
   static propTypes = {
     menuItems: PropTypes.array.isRequired,
     activeMenuItem: PropTypes.number,
+    changeActiveMenuItem: PropTypes.func,
   };
 
   static defaultProps = {
@@ -29,14 +33,17 @@ export class SideMenu extends Component<MenuProps, State> {
   }
 
   render() {
-    const { menuItems, activeMenuItem } = this.props;
+    const { menuItems, activeMenuItem, changeActiveMenuItem } = this.props;
 
     return (
       <div className="sidemenu">
         <aside className="menu">
           <ul className="menu-list">
             {menuItems.map((menuItem: MenuItem) => (
-              <li key={menuItem.id}>
+              <li
+                key={menuItem.id}
+                onClick={() => changeActiveMenuItem(menuItem.id)}
+              >
                 <a
                   className={menuItem.id === activeMenuItem ? "is-active" : ""}
                 >
@@ -50,5 +57,3 @@ export class SideMenu extends Component<MenuProps, State> {
     );
   }
 }
-
-export default SideMenu;

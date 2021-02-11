@@ -1,12 +1,22 @@
 import React, { Component } from "react";
 
-import 'bulma';
+import "bulma";
 import "./Header.scss";
 
-class Header extends Component {
+interface HeaderProps {
+  totalAid: number;
+}
+
+class Header extends Component<HeaderProps> {
+  constructor(props: HeaderProps) {
+    super(props);
+  }
+
   render() {
+    const { totalAid } = this.props;
+
     return (
-      <div className="header">
+      <div className="header pt-2">
         <div className="columns">
           <div className="column is-1 ml-6">
             <img src={"./A4T-logo.png"} className="header__logo" />
@@ -18,9 +28,9 @@ class Header extends Component {
 
         <div className="columns is-flex is-align-items-center">
           <div className="column is-5">
-            <div className="is-flex is-align-items-center is-justify-content-space-between ml-6">
-              <h3 className="header__total-aid is-uppercase">Total Aid</h3>
-              <h4 className="header__total-aid-value">194, 663, 072, 350 </h4>
+            <div className="is-flex is-align-items-center is-justify-content-center ml-6">
+              <h3 className="header__total-aid is-uppercase mr-4">Total Aid</h3>
+              <h4 className="header__total-aid-value">{totalAid} </h4>
             </div>
           </div>
           <div className="header__vertical-line"></div>
