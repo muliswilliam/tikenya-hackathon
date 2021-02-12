@@ -12,10 +12,6 @@ interface ExpenditureNationalProps {
 }
 
 export class ExpenditureNational extends Component<ExpenditureNationalProps> {
-  constructor(props: ExpenditureNationalProps) {
-    super(props);
-  }
-
   render() {
     const { pieChartData, menuItemName } = this.props;
 

@@ -8,10 +8,6 @@ interface HeaderProps {
 }
 
 class Header extends Component<HeaderProps> {
-  constructor(props: HeaderProps) {
-    super(props);
-  }
-
   render() {
     const { totalAid } = this.props;
 
@@ -19,7 +15,7 @@ class Header extends Component<HeaderProps> {
       <div className="header pt-2">
         <div className="columns">
           <div className="column is-1 ml-6">
-            <img src={"./A4T-logo.png"} className="header__logo" />
+            <img src={"./A4T-logo.png"} alt="A4T logo" className="header__logo" />
           </div>
           <div className="column is-11 has-text-centered is-flex is-align-items-center">
             <h1 className="header__title is-uppercase">Covid-19 Aid Tracker</h1>

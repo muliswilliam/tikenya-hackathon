@@ -10,7 +10,6 @@ const tickStyles = {
 };
 
 const COLORS = ["#18D8A6", "#1185B2", "#FACE61", "#093B4C"];
-const descriptionStyles = { fontSize: 14, fontWeight: 400 };
 
 interface PieChartItem {
   name: string;
@@ -24,7 +23,7 @@ interface ExpenditurePieChartProps {
 }
 
 const renderCustomizedLabel = (pieChartData: PieChartItem[], props: any) => {
-  const { cx, cy, midAngle, innerRadius, outerRadius, value, index } = props;
+  const { cx, cy, midAngle, innerRadius, outerRadius, index } = props;
   const RADIAN = Math.PI / 180;
   // eslint-disable-next-line
   const radius = 25 + innerRadius + (outerRadius - innerRadius);

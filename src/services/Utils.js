@@ -23,7 +23,7 @@ numeral.register("locale", "us", {
 export const categories = ["ngo", "private", "international_organization"];
 
 const NATIONAL_GOVERNMENT = "National Government";
-const COUNTY_GOVERNMENT = "County Government";
+// const COUNTY_GOVERNMENT = "County Government";
 
 const filterOutInKindDonations = (donations) => {
   return donations.filter((item) => item.amount !== "INKIND");

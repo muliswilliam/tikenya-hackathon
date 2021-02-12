@@ -43,19 +43,15 @@ export class Visualization extends Component<VisualizationProps, State> {
     switch (activeTab.toLocaleLowerCase()) {
       case "aid":
         return <Aid />;
-        break;
 
       case "in kind":
         return <InKind />;
-        break;
 
       case "expenditure":
         return <Expenditure />;
-        break;
 
       default:
         return <Aid />;
-        break;
     }
   };
 

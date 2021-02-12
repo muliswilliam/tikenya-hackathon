@@ -23,8 +23,6 @@ export interface State {
   countyGovtReceipt: number;
 }
 
-const descriptionStyles = { fontSize: 14, fontWeight: 400 };
-
 export class Expenditure extends Component<ExpenditureProps, State> {
   constructor(props: ExpenditureProps) {
     super(props);

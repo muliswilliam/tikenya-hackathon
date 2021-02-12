@@ -10,8 +10,6 @@ const tickStyles = {
   fontFamily: "Roboto",
 };
 
-const COLORS = ["#18D8A6", "#1185B2", "#FACE61", "#093B4C"];
-
 interface PieChartItem {
   name: string;
   value: number;
@@ -30,14 +28,10 @@ export class ExpenditureCounties extends Component<
   ExpenditureCountiesProps,
   State
 > {
-  constructor(props: ExpenditureCountiesProps) {
-    super(props);
-  }
-
   renderCustomizedLabel = (props: any) => {
     const { pieChartData } = this.props;
 
-    const { cx, cy, midAngle, innerRadius, outerRadius, value, index } = props;
+    const { cx, cy, midAngle, innerRadius, outerRadius, index } = props;
     const RADIAN = Math.PI / 180;
     const radius = 25 + innerRadius + (outerRadius - innerRadius);
     const x = cx + radius * Math.cos(-midAngle * RADIAN);

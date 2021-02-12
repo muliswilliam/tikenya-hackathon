@@ -39,7 +39,7 @@ const tickStyles = {
 };
 
 const RotatedTick = (props: any) => {
-  const { x, y, stroke, payload } = props;
+  const { x, y, payload } = props;
 
   return (
     <g transform={`translate(${x},${y})`}>

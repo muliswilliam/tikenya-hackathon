@@ -28,10 +28,6 @@ export class SideMenu extends Component<MenuProps, State> {
     activeIndex: null,
   };
 
-  constructor(props: MenuProps) {
-    super(props);
-  }
-
   render() {
     const { menuItems, activeMenuItem, changeActiveMenuItem } = this.props;
 
@@ -45,6 +41,7 @@ export class SideMenu extends Component<MenuProps, State> {
                 onClick={() => changeActiveMenuItem(menuItem.id)}
               >
                 <a
+                  href=""
                   className={menuItem.id === activeMenuItem ? "is-active" : ""}
                 >
                   {menuItem.name}
