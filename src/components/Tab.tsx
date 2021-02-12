@@ -7,7 +7,7 @@ const Tab = (props: any) => {
       className={name.toLowerCase() === activeTab ? "is-active" : ""}
       onClick={() => changeActiveTab(name)}
     >
-      <a href="">{name}</a>
+      <a>{name}</a>
     </li>
   );
 };
