@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import Tab from "../Tab";
 import "./CategoryTab.scss";
 
 export interface TabItem {
   name: string;
-  content: string;
 }
 
 export interface CategoryTabProps {
@@ -24,6 +24,8 @@ export class CategoryTab extends Component<CategoryTabProps, State> {
   };
 
   render() {
+    const { activeTab, changeActiveTab } = this.props;
+
     return (
       <div className="category-tab">
         <div className="tabs is-centered">
@@ -32,8 +34,8 @@ export class CategoryTab extends Component<CategoryTabProps, State> {
               <Tab
                 tab={tab}
                 key={tab.name}
-                activeTab={this.props.activeTab}
-                changeActiveTab={this.props.changeActiveTab}
+                activeTab={activeTab}
+                changeActiveTab={changeActiveTab}
               />
             ))}
           </ul>
@@ -42,17 +44,3 @@ export class CategoryTab extends Component<CategoryTabProps, State> {
     );
   }
 }
-
-const Tab = (props: any) => {
-  const { name } = props.tab;
-  const { activeTab, changeActiveTab } = props;
-
-  return (
-    <li
-      className={name === activeTab ? "is-active" : ""}
-      onClick={() => changeActiveTab(name)}
-    >
-      <a>{name}</a>
-    </li>
-  );
-};

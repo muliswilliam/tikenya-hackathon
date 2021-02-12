@@ -1,0 +1,28 @@
+.inkind-tab {
+  margin-top: 10px;
+
+  .tabs a {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ef476f;
+    opacity: 0.5;
+    letter-spacing: 0.17px;
+    text-transform: uppercase;
+    border-bottom-color: transparent;
+    border-bottom-width: 1.5px;
+    padding: 0 15px;
+    padding-bottom: 10px;
+    margin-right: 50px;
+  }
+
+  .tabs li.is-active a {
+    color: #ef476f;
+    opacity: 1;
+    border-bottom-color: #ef476f;
+    border-width: 4px;
+  }
+
+  .tabs ul {
+    border-bottom: none;
+  }
+}

@@ -78,7 +78,6 @@ export class ExpenditureCounties extends Component<
       countyGovtReceipt,
     } = this.props;
 
-    console.log(this.props);
     const stackData = {
       unallocated: nationalGovtFunding - countyGovtReceipt,
       allocated: countyGovtReceipt,

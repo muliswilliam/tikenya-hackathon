@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "bulma";
 
 import Header from "./components/Header/Header";
-import { Visualization } from "./components/CategoryTab/Visualization/Visualization";
+import { Visualization } from "./components/Visualization/Visualization";
 import { calculateTotalAid, formatNumber } from "./services/Utils";
 
 import "./App.scss";
