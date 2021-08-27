@@ -97,10 +97,13 @@ export class Aid extends Component<AidProps, State> {
   componentDidMount() {
     const { activeMenuItemId } = this.state;
 
-    fetch("funding.json")
+    // Consume new data
+    // fetch("funding.json")
+    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_aid")
       .then((response) => response.json())
       .then((data) => {
         var categorized = categorizeFundingData(data);
+        // console.log(categorized);
         this.setState({
           fundingData: categorized,
           barChartData: filterByMenuId(categorized, activeMenuItemId),
