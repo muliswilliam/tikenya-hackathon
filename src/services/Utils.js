@@ -26,9 +26,10 @@ const NATIONAL_GOVERNMENT = "National Government";
 // const COUNTY_GOVERNMENT = "County Government";
 
 const filterOutInKindDonations = (donations) => {
-  return donations.filter((item) => item.amount !== "INKIND");
+  return donations.filter((item) => item.amount_pledged !== "");
 };
 
+// Ignore for now since there isn't donor_type field in API
 export const categorizeFundingData = (data) => {
   const categorized = data.map((item, index) => {
     if (index <= 7) item.donor_type = categories[0];
@@ -45,21 +46,36 @@ export const categorizeFundingData = (data) => {
 
 export const calculateTotalAid = (data) => {
   return filterOutInKindDonations(data)
-    .map((item) => item.amount)
-    .reduce((a, b) => a + b, 0);
+    .map((item) => item.amount_pledged)
+    .reduce((a, b) => +a + +b, 0);
 };
 
 export const filterByMenuId = (data, menuId) => {
-  return filterOutInKindDonations(data)
-    .filter((item) => item.donor_type === categories[menuId])
-    .map((item) => {
-      return {
-        name: item.donor,
-        amount: item.amount,
-        formattedAmount: formatAmount(item.amount),
-      };
-    });
+  return (
+    filterOutInKindDonations(data)
+      .filter((item) => item.donor_type === categories[menuId])
+      // Do not display on barchat donors who didn't pledge
+      .filter((item) => Number(item.amount_pledged))
+      .map((item) => {
+        return {
+          name: item.donor,
+          amount: item.amount_pledged,
+          formattedAmount: formatAmount(item.amount_pledged),
+        };
+      })
+  );
 };
+// export const filterByMenuId = (data, menuId) => {
+//   return filterOutInKindDonations(data)
+//     .filter((item) => item.donor_type === categories[menuId])
+//     .map((item) => {
+//       return {
+//         name: item.donor,
+//         amount: item.amount,
+//         formattedAmount: formatAmount(item.amount),
+//       };
+//     });
+// };
 
 export const formatAmount = (amount) => {
   numeral.locale("us");
@@ -112,7 +128,7 @@ export const getExpenditureSummary = (data) => {
 
 export const getNationalGovernmentFunding = (fundingData) => {
   return filterOutInKindDonations(fundingData)
-    .filter((item) => item.recepient === NATIONAL_GOVERNMENT)
-    .map((item) => item.amount)
-    .reduce((a, b) => a + b, 0);
+    .filter((item) => item.recipient[0] === NATIONAL_GOVERNMENT)
+    .map((item) => item.amount_pledged)
+    .reduce((a, b) => +a + +b, 0);
 };

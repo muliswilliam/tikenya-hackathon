@@ -22,7 +22,8 @@ class App extends Component<AppProps, State> {
     };
   }
   componentDidMount() {
-    fetch("funding.json")
+    // fetch("funding.json")
+    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_aid")
       .then((response) => response.json())
       .then((data) => {
         const totalAid = calculateTotalAid(data);
