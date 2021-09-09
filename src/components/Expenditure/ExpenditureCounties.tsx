@@ -84,11 +84,11 @@ export class ExpenditureCounties extends Component<
         <div className="pt-6 pl-6 pr-6 is-flex is-flex is-justify-content-space-between">
           <div>
             <p className="visualization__title">
-              Expending Body: County Governments
+              Expending Body: {menuItemName}
             </p>
-            <p className="visualization__sub-title">
-              Source of funds: National Government
-            </p>
+            {/* <p className="visualization__sub-title">
+              Source of funds: {menuItemName}
+            </p> */}
           </div>
           <div>
             <h4 className="visualization__disbursed">
