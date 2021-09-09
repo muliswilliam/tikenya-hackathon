@@ -39,7 +39,8 @@ export class Expenditure extends Component<ExpenditureProps, State> {
   }
 
   componentDidMount() {
-    fetch("expenditure.json")
+    // fetch("expenditure.json")
+    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_expenditure")
       .then((response) => response.json())
       .then((data) => {
         const summary = getExpenditureSummary(data);
@@ -51,11 +52,12 @@ export class Expenditure extends Component<ExpenditureProps, State> {
         });
       });
 
-    fetch("funding.json")
+    // fetch("funding.json")
+    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_aid")
       .then((response) => response.json())
       .then((data) => {
         const nationalGovtFunding = getNationalGovernmentFunding(data);
-        const countyGovtReceipt = 0.3 * nationalGovtFunding;
+        const countyGovtReceipt = 0.3 * nationalGovtFunding        
 
         this.setState({ nationalGovtFunding, countyGovtReceipt });
       });
@@ -89,22 +91,29 @@ export class Expenditure extends Component<ExpenditureProps, State> {
     const filteredData = getExpenditureByBody(expenditureData, body);
     const summary = getExpenditureSummary(filteredData);
 
-    if (body === "National Government") {
-      return (
-        <ExpenditureNational
-          menuItemName={body}
-          pieChartData={summary.totals}
-        />
-      );
-    }
+    // if (body === "National Government") {
+    //   return (
+    //     <ExpenditureNational
+    //       menuItemName={body}
+    //       pieChartData={summary.totals}
+    //     />
+    //   );
+    // }
 
-    if (body === "County Government") {
+    if (body === "County Governments") {
       return (
         <ExpenditureCounties
           menuItemName={body}
           pieChartData={summary.totals}
           nationalGovtFunding={nationalGovtFunding}
           countyGovtReceipt={countyGovtReceipt}
+        />
+      );
+    }else{
+      return (
+        <ExpenditureNational
+          menuItemName={body}
+          pieChartData={summary.totals}
         />
       );
     }

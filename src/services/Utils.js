@@ -22,20 +22,35 @@ numeral.register("locale", "us", {
 
 export const categories = ["ngo", "private", "international_organization"];
 
+const donorCategories = {
+  ngo: ["E.U", "Slovakian Republic"],
+  private: [
+    "Zhejiang Business Association",
+    "Communications Authority of Kenya",
+    "Coca Cola",
+  ],
+  ing: ["US Embassy", "Embassy of Germany", "U.S. Government"],
+};
+
 const NATIONAL_GOVERNMENT = "National Government";
 // const COUNTY_GOVERNMENT = "County Government";
 
 const filterOutInKindDonations = (donations) => {
-  return donations.filter((item) => item.amount !== "INKIND");
+  return donations.filter((item) => {
+    return item.amount_pledged !== "";
+  });
 };
 
 export const categorizeFundingData = (data) => {
   const categorized = data.map((item, index) => {
-    if (index <= 7) item.donor_type = categories[0];
+    const ngo = donorCategories.ngo.includes(item.donor);
+    if (ngo) item.donor_type = categories[0];
 
-    if (index > 7 && index <= 11) item.donor_type = categories[1];
+    const privateOrg = donorCategories.private.includes(item.donor);
+    if (privateOrg) item.donor_type = categories[1];
 
-    if (index > 11) item.donor_type = categories[2];
+    const ing = donorCategories.ing.includes(item.donor);
+    if (ing) item.donor_type = categories[2];
 
     return item;
   });
@@ -45,8 +60,8 @@ export const categorizeFundingData = (data) => {
 
 export const calculateTotalAid = (data) => {
   return filterOutInKindDonations(data)
-    .map((item) => item.amount)
-    .reduce((a, b) => a + b, 0);
+    .map((item) => item.amount_pledged)
+    .reduce((a, b) => +a + +b, 0);
 };
 
 export const filterByMenuId = (data, menuId) => {
@@ -55,8 +70,8 @@ export const filterByMenuId = (data, menuId) => {
     .map((item) => {
       return {
         name: item.donor,
-        amount: item.amount,
-        formattedAmount: formatAmount(item.amount),
+        amount: item.amount_pledged,
+        formattedAmount: formatAmount(item.amount_pledged),
       };
     });
 };
@@ -78,20 +93,29 @@ export const getExpenditureSummary = (data) => {
   const categories = [];
   const expendingBodies = [];
   const totals = {};
+  const funds = [];
 
   data.forEach((item) => {
-    var expenditureTypes = item.expenditure_types;
+    // var expenditureTypes = item.expenditure_types;
+    let exp = item.type;
+    let fundSource = item.source_of_fund;
+    let isNumber = Number(item.amount_expended);
 
     if (expendingBodies.indexOf(item.expending_body) === -1)
       expendingBodies.push(item.expending_body);
 
-    expenditureTypes.forEach((exp) => {
-      if (categories.indexOf(exp) === -1) categories.push(exp);
+    // expenditureTypes.forEach((exp) => {
+    if (categories.indexOf(exp) === -1) categories.push(exp);
+    if (funds.indexOf(fundSource) === -1) funds.push(fundSource);
 
-      if (!totals[exp]) totals[exp] = item.amount_expended;
+    if (!totals[exp] && isNumber) {
+      totals[exp] = item.amount_expended;
+    }
 
-      if (totals[exp]) totals[exp] = totals[exp] + item.amount_expended;
-    });
+    if (totals[exp] && isNumber) {
+      totals[exp] = +totals[exp] + +item.amount_expended;
+    }
+    // });
   });
 
   var keys = Object.keys(totals);
@@ -107,12 +131,13 @@ export const getExpenditureSummary = (data) => {
     categories,
     totals: _totals,
     expendingBodies,
+    funds: funds[0],
   };
 };
 
 export const getNationalGovernmentFunding = (fundingData) => {
   return filterOutInKindDonations(fundingData)
-    .filter((item) => item.recepient === NATIONAL_GOVERNMENT)
-    .map((item) => item.amount)
-    .reduce((a, b) => a + b, 0);
+    .filter((item) => item.recipient[0] === NATIONAL_GOVERNMENT)
+    .map((item) => item.amount_pledged)
+    .reduce((a, b) => +a + +b, 0);
 };
