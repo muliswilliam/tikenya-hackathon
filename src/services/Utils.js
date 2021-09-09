@@ -36,11 +36,10 @@ const NATIONAL_GOVERNMENT = "National Government";
 // const COUNTY_GOVERNMENT = "County Government";
 
 const filterOutInKindDonations = (donations) => {
-  return donations.filter((item) => {
-    return item.amount_pledged !== "";
-  });
+  return donations.filter((item) => item.amount_pledged !== "");
 };
 
+// Ignore for now since there isn't donor_type field in API
 export const categorizeFundingData = (data) => {
   const categorized = data.map((item, index) => {
     const ngo = donorCategories.ngo.includes(item.donor);
@@ -65,16 +64,31 @@ export const calculateTotalAid = (data) => {
 };
 
 export const filterByMenuId = (data, menuId) => {
-  return filterOutInKindDonations(data)
-    .filter((item) => item.donor_type === categories[menuId])
-    .map((item) => {
-      return {
-        name: item.donor,
-        amount: item.amount_pledged,
-        formattedAmount: formatAmount(item.amount_pledged),
-      };
-    });
+  return (
+    filterOutInKindDonations(data)
+      .filter((item) => item.donor_type === categories[menuId])
+      // Do not display on barchat donors who didn't pledge
+      .filter((item) => Number(item.amount_pledged))
+      .map((item) => {
+        return {
+          name: item.donor,
+          amount: item.amount_pledged,
+          formattedAmount: formatAmount(item.amount_pledged),
+        };
+      })
+  );
 };
+// export const filterByMenuId = (data, menuId) => {
+//   return filterOutInKindDonations(data)
+//     .filter((item) => item.donor_type === categories[menuId])
+//     .map((item) => {
+//       return {
+//         name: item.donor,
+//         amount: item.amount,
+//         formattedAmount: formatAmount(item.amount),
+//       };
+//     });
+// };
 
 export const formatAmount = (amount) => {
   numeral.locale("us");
