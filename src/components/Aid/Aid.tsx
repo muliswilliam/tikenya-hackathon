@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from "recharts";
-import { MenuItem, SideMenu } from "../Sidemenu/SideMenu";
+import React, { Component } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from 'recharts';
+import { MenuItem, SideMenu } from '../Sidemenu/SideMenu';
 
 import {
   categorizeFundingData,
   filterByMenuId,
   formatAmount,
-} from "../../services/Utils";
+} from '../../services/Utils';
 
-import "./Aid.scss";
+import './Aid.scss';
 
 interface FundItem {
   name: string;
@@ -23,19 +23,20 @@ export interface State {
   activeMenuItemId: number;
   fundingData: object[];
   barChartData: FundItem[];
+  loading: boolean;
 }
 
 const axisLineStyles = {
-  fill: "#073b4c",
+  fill: '#073b4c',
   width: 1,
   opacity: 0.5,
 };
 
 const tickStyles = {
-  fill: "#073b4c",
+  fill: '#073b4c',
   fontSize: 13,
   fontWeight: 500,
-  fontFamily: "Roboto",
+  fontFamily: 'Roboto',
 };
 
 const RotatedTick = (props: any) => {
@@ -65,15 +66,15 @@ export class Aid extends Component<AidProps, State> {
     const menuItems: MenuItem[] = [
       {
         id: 0,
-        name: "Non Govt Organization (NGO)",
+        name: 'Non Govt Organization (NGO)',
       },
       {
         id: 1,
-        name: "Private Sector",
+        name: 'Private Sector',
       },
       {
         id: 2,
-        name: "International Organizations",
+        name: 'International Organizations',
       },
     ];
 
@@ -82,6 +83,7 @@ export class Aid extends Component<AidProps, State> {
       activeMenuItemId: 0,
       fundingData: [],
       barChartData: [],
+      loading: true,
     };
   }
 
@@ -91,6 +93,7 @@ export class Aid extends Component<AidProps, State> {
     this.setState({
       activeMenuItemId: menuItemId,
       barChartData: filterByMenuId(fundingData, menuItemId),
+      loading: false,
     });
   };
 
@@ -98,7 +101,7 @@ export class Aid extends Component<AidProps, State> {
     const { activeMenuItemId } = this.state;
 
     // Consume new data
-    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_aid")
+    fetch('http://actionfortransparency.org/wp-json/wp/v2/covid19_aid')
       .then((response) => response.json())
       .then((data) => {
         var categorized = categorizeFundingData(data);
@@ -106,13 +109,19 @@ export class Aid extends Component<AidProps, State> {
         this.setState({
           fundingData: categorized,
           barChartData: filterByMenuId(categorized, activeMenuItemId),
+          loading: false,
         });
       });
   }
 
   render() {
-    const { menuItems, activeMenuItemId, barChartData } = this.state;
+    const { menuItems, activeMenuItemId, barChartData, loading } = this.state;
     const sector = menuItems[activeMenuItemId].name;
+
+    if (loading) {
+      return <button className="button is-loading">Loading</button>;
+    }
+
     return (
       <div className="columns">
         <div className="column is-one-quarter">
@@ -164,7 +173,7 @@ export class Aid extends Component<AidProps, State> {
           formatter={(value: any, name: any, props: any) => {
             return formatAmount(value);
           }}
-          cursor={{ fill: "transparent" }}
+          cursor={{ fill: 'transparent' }}
         />
         <Bar dataKey="amount" fill="#118ab2">
           <LabelList dataKey="formattedAmount" position="top" fill="#118ab2" />
