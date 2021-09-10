@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import "bulma";
+import React, { Component } from 'react';
+import 'bulma';
 
-import Header from "./components/Header/Header";
-import { Visualization } from "./components/Visualization/Visualization";
-import { calculateTotalAid, formatNumber } from "./services/Utils";
+import Header from './components/Header/Header';
+import { Visualization } from './components/Visualization/Visualization';
+import { calculateTotalAid, formatNumber } from './services/Utils';
 
-import "./App.scss";
+import './App.scss';
 
 interface AppProps {}
 
@@ -23,7 +23,7 @@ class App extends Component<AppProps, State> {
   }
   componentDidMount() {
     // fetch("funding.json")
-    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_aid")
+    fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_aid')
       .then((response) => response.json())
       .then((data) => {
         const totalAid = calculateTotalAid(data);

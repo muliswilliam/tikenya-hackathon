@@ -1,15 +1,15 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { MenuItem, SideMenu } from "../Sidemenu/SideMenu";
-import { ExpenditureNational } from "./ExpenditureNational";
-import { ExpenditureCounties } from "./ExpenditureCounties";
+import { MenuItem, SideMenu } from '../Sidemenu/SideMenu';
+import { ExpenditureNational } from './ExpenditureNational';
+import { ExpenditureCounties } from './ExpenditureCounties';
 import {
   getExpenditureSummary,
   getExpenditureByBody,
   getNationalGovernmentFunding,
-} from "../../services/Utils";
+} from '../../services/Utils';
 
-import "./Expenditure.scss";
+import './Expenditure.scss';
 
 export interface ExpenditureProps {}
 
@@ -40,7 +40,7 @@ export class Expenditure extends Component<ExpenditureProps, State> {
 
   componentDidMount() {
     // fetch("expenditure.json")
-    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_expenditure")
+    fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_expenditure')
       .then((response) => response.json())
       .then((data) => {
         const summary = getExpenditureSummary(data);
@@ -53,11 +53,11 @@ export class Expenditure extends Component<ExpenditureProps, State> {
       });
 
     // fetch("funding.json")
-    fetch("http://actionfortransparency.org/wp-json/wp/v2/covid19_aid")
+    fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_aid')
       .then((response) => response.json())
       .then((data) => {
         const nationalGovtFunding = getNationalGovernmentFunding(data);
-        const countyGovtReceipt = 0.3 * nationalGovtFunding        
+        const countyGovtReceipt = 0.3 * nationalGovtFunding;
 
         this.setState({ nationalGovtFunding, countyGovtReceipt });
       });
@@ -83,11 +83,8 @@ export class Expenditure extends Component<ExpenditureProps, State> {
   };
 
   renderActiveContent(activeMenuItemId: number, body: string) {
-    const {
-      expenditureData,
-      countyGovtReceipt,
-      nationalGovtFunding,
-    } = this.state;
+    const { expenditureData, countyGovtReceipt, nationalGovtFunding } =
+      this.state;
     const filteredData = getExpenditureByBody(expenditureData, body);
     const summary = getExpenditureSummary(filteredData);
 
@@ -100,7 +97,7 @@ export class Expenditure extends Component<ExpenditureProps, State> {
     //   );
     // }
 
-    if (body === "County Governments") {
+    if (body === 'County Governments') {
       return (
         <ExpenditureCounties
           menuItemName={body}
@@ -109,7 +106,7 @@ export class Expenditure extends Component<ExpenditureProps, State> {
           countyGovtReceipt={countyGovtReceipt}
         />
       );
-    }else{
+    } else {
       return (
         <ExpenditureNational
           menuItemName={body}
