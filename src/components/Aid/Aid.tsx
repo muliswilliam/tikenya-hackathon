@@ -16,13 +16,8 @@ interface FundItem {
   formattedAmount: string;
 }
 
-export interface AidProps {}
-
-export interface State {
-  menuItems: MenuItem[];
-  activeMenuItemId: number;
-  fundingData: object[];
-  barChartData: FundItem[];
+export interface AidProps {
+  covidAid: any[];
   loading: boolean;
 }
 
@@ -59,126 +54,109 @@ const RotatedTick = (props: any) => {
   );
 };
 
-export class Aid extends Component<AidProps, State> {
-  constructor(props: AidProps) {
-    super(props);
+const Aid = (props: AidProps) => {
+  const { covidAid, loading } = props;
+  const [activeMenuItemId, setActiveMenuId] = React.useState(0);
+  const menuItems: MenuItem[] = [
+    {
+      id: 0,
+      name: 'Non Govt Organizations (NGOs)',
+    },
+    {
+      id: 1,
+      name: 'Private Sector',
+    },
+    {
+      id: 2,
+      name: 'Governments',
+    },
+  ];
 
-    const menuItems: MenuItem[] = [
-      {
-        id: 0,
-        name: 'Non Govt Organization (NGO)',
-      },
-      {
-        id: 1,
-        name: 'Private Sector',
-      },
-      {
-        id: 2,
-        name: 'International Organizations',
-      },
-    ];
+  const fundingData = React.useMemo(() => {
+    return categorizeFundingData(covidAid);
+  }, [covidAid]);
 
-    this.state = {
-      menuItems: menuItems,
-      activeMenuItemId: 0,
-      fundingData: [],
-      barChartData: [],
-      loading: true,
-    };
-  }
+  const barChartData = React.useMemo(() => {
+    return filterByMenuId(fundingData, activeMenuItemId);
+  }, [activeMenuItemId, fundingData])
 
-  changeActiveMenuItem = (menuItemId: number) => {
-    const { fundingData } = this.state;
+  const sector = React.useMemo(() => {
+    return menuItems[activeMenuItemId].name;
+  }, [activeMenuItemId]);
 
-    this.setState({
-      activeMenuItemId: menuItemId,
-      barChartData: filterByMenuId(fundingData, menuItemId),
-      loading: false,
-    });
+  const changeActiveMenuItem = (menuItemId: number) => {
+    setActiveMenuId(menuItemId);
   };
 
-  componentDidMount() {
-    const { activeMenuItemId } = this.state;
-
-    // Consume new data
-    fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_aid')
-      .then((response) => response.json())
-      .then((data) => {
-        var categorized = categorizeFundingData(data);
-        // console.log(categorized);
-        this.setState({
-          fundingData: categorized,
-          barChartData: filterByMenuId(categorized, activeMenuItemId),
-          loading: false,
-        });
-      });
+  if (loading) {
+    return <button className="button is-loading">Loading</button>;
   }
 
-  render() {
-    const { menuItems, activeMenuItemId, barChartData, loading } = this.state;
-    const sector = menuItems[activeMenuItemId].name;
-
-    if (loading) {
-      return <button className="button is-loading">Loading</button>;
-    }
-
-    return (
-      <div className="columns">
-        <div className="column is-one-quarter">
-          <SideMenu
-            menuItems={menuItems}
-            activeMenuItem={activeMenuItemId}
-            changeActiveMenuItem={this.changeActiveMenuItem}
-          ></SideMenu>
-        </div>
-        <div className="column is-three-quarters mt-6">
-          <p className="visualization__title ml-6 pb-4">{sector}</p>
-          <div className="visualization__chart-area">
-            {this.renderBarGraph(barChartData)}
-          </div>
+  return (
+    <div className="columns">
+      <div className="column is-one-quarter">
+        <SideMenu
+          menuItems={menuItems}
+          activeMenuItem={activeMenuItemId}
+          changeActiveMenuItem={changeActiveMenuItem}
+        ></SideMenu>
+      </div>
+      <div className="column is-three-quarters mt-6">
+        <p className="visualization__title ml-6 pb-4">{sector}</p>
+        <div className="visualization__chart-area">
+          {renderBarGraph(barChartData)}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+};
 
-  renderBarGraph(barChartData: FundItem[]) {
-    return (
-      <BarChart
-        width={1000}
-        height={450}
-        data={barChartData}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 100,
+const renderBarGraph = (barChartData: FundItem[]) => {
+  const amounts = barChartData.map(item => item.amount);
+  const max = Math.max(...amounts)
+  const min = Math.min(...amounts)
+
+  return (
+    <BarChart
+      width={1000}
+      height={450}
+      data={barChartData}
+      margin={{
+        top: 5,
+        right: 30,
+        left: 20,
+        bottom: 100,
+      }}
+      barSize={30}
+    >
+      <XAxis
+        dataKey="name"
+        tickLine={false}
+        axisLine={axisLineStyles}
+        tick={<RotatedTick />}
+        padding={{ left: 0 }}
+        interval={0}
+      />
+      <YAxis
+        type="number"
+        tickFormatter={(tickItem) => formatAmount(tickItem)}
+        padding={{ top: 50 }}
+        axisLine={axisLineStyles}
+        tick={tickStyles}
+        domain={[min - 1000, max]}
+      />
+      <Tooltip
+        formatter={(value: any, name: any, props: any) => {
+          return formatAmount(value);
         }}
-        barSize={30}
-      >
-        <XAxis
-          dataKey="name"
-          tickLine={false}
-          axisLine={axisLineStyles}
-          tick={<RotatedTick />}
-          padding={{ left: 0 }}
-          interval={0}
-        />
-        <YAxis
-          tickFormatter={(tickItem) => formatAmount(tickItem)}
-          padding={{ top: 50 }}
-          axisLine={axisLineStyles}
-          tick={tickStyles}
-        />
-        <Tooltip
-          formatter={(value: any, name: any, props: any) => {
-            return formatAmount(value);
-          }}
-          cursor={{ fill: 'transparent' }}
-        />
-        <Bar dataKey="amount" fill="#118ab2">
-          <LabelList dataKey="formattedAmount" position="top" fill="#118ab2" />
-        </Bar>
-      </BarChart>
-    );
-  }
-}
+        cursor={{ fill: 'transparent' }}
+      />
+
+      <Bar dataKey="amount" fill="#118ab2">
+        <LabelList dataKey="formattedAmount" position="top" fill="#118ab2" />
+      </Bar>
+    </BarChart>
+  );
+};
+
+export default Aid;

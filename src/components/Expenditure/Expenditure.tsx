@@ -39,7 +39,6 @@ export class Expenditure extends Component<ExpenditureProps, State> {
   }
 
   componentDidMount() {
-    // fetch("expenditure.json")
     fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_expenditure')
       .then((response) => response.json())
       .then((data) => {
@@ -52,7 +51,6 @@ export class Expenditure extends Component<ExpenditureProps, State> {
         });
       });
 
-    // fetch("funding.json")
     fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_aid')
       .then((response) => response.json())
       .then((data) => {

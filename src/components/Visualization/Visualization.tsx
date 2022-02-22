@@ -1,74 +1,77 @@
 import React, { Component } from "react";
 
-import { Aid } from "../Aid/Aid";
+import Aid from "../Aid/Aid";
 import { CategoryTab, TabItem } from "../CategoryTab/CategoryTab";
 import { Expenditure } from "../Expenditure/Expenditure";
 import InKind from "../InKind/InKind";
 
 import "./Visualization.scss";
 
-export interface VisualizationProps {}
+export interface VisualizationProps {
+  loading: boolean;
+  cashDonations: any[];
+  inKindDonations: any[]
+}
 export interface State {
   activeTab: string;
   tabList: TabItem[];
 }
 
-const tabList: TabItem[] = [
-  {
-    name: "Aid",
-  },
-  {
-    name: "Expenditure",
-  },
-  {
-    name: "In Kind",
-  },
-];
 
-export class Visualization extends Component<VisualizationProps, State> {
-  constructor(props: VisualizationProps) {
-    super(props);
 
-    this.state = {
-      activeTab: "aid",
-      tabList: tabList,
-    };
-  }
+const Visualization = (props: VisualizationProps) => {
+  const { loading, cashDonations, inKindDonations } = props;
+  const [activeTab, setActiveTab] = React.useState('aid')
+  const tabList: TabItem[] = [
+    {
+      name: "Aid",
+    },
+    {
+      name: "Expenditure",
+    },
+    {
+      name: "In Kind",
+    },
+  ];
 
-  changeActiveTab = (tabName: string) => {
-    this.setState({ activeTab: tabName.toLocaleLowerCase() });
+  const changeActiveTab = (tabName: string) => {
+    setActiveTab(tabName.toLocaleLowerCase())
   };
 
-  renderChart = (activeTab: string) => {
+  const renderChart = (activeTab: string) => {
     switch (activeTab.toLocaleLowerCase()) {
       case "aid":
-        return <Aid />;
+        return <Aid 
+          loading={loading}
+          covidAid={cashDonations} 
+        />;
 
       case "in kind":
-        return <InKind />;
+        return <InKind donations={inKindDonations}/>;
 
       case "expenditure":
         return <Expenditure />;
 
       default:
-        return <Aid />;
+        return <Aid
+        loading={loading}
+        covidAid={cashDonations} 
+        />;
     }
   };
 
-  render() {
-    const { tabList, activeTab } = this.state;
-
-    return (
-      <div className="mt-4">
-        <CategoryTab
-          tabList={tabList}
-          activeTab={activeTab}
-          changeActiveTab={this.changeActiveTab}
-        />
-        <div className="tabs-content visualization__tab-content mt-3">
-          {this.renderChart(activeTab)}
-        </div>
+  return (
+    <div className="mt-4">
+      <CategoryTab
+        tabList={tabList}
+        activeTab={activeTab}
+        changeActiveTab={changeActiveTab}
+      />
+      <div className="tabs-content visualization__tab-content mt-3">
+        {renderChart(activeTab)}
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+export default Visualization;

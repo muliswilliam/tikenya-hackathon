@@ -20,16 +20,27 @@ numeral.register("locale", "us", {
   },
 });
 
+// Japan Government
+// Broadway Group of Companies
+// Kalonzo Musyoka Foundation
+// GoK
+// Slovakian Republic
+// U.S. Government
+// Coca Cola Foundation
+// E.U
+// US Embassy
+// Embassy of Germany
 export const categories = ["ngo", "private", "international_organization"];
 
 const donorCategories = {
-  ngo: ["E.U", "Slovakian Republic"],
+  ngo: ["E.U", , "Kalonzo Musyoka Foundation", ""],
   private: [
     "Zhejiang Business Association",
     "Communications Authority of Kenya",
-    "Coca Cola",
+    "Coca Cola Foundation",
+    "Broadway Group of Companies"
   ],
-  ing: ["US Embassy", "Embassy of Germany", "U.S. Government"],
+  ing: ["GoK", "US Embassy", "Embassy of Germany", "U.S. Government", "Slovakian Republic", "Japan Government"],
 };
 
 const NATIONAL_GOVERNMENT = "National Government";
@@ -42,13 +53,14 @@ const filterOutInKindDonations = (donations) => {
 // Ignore for now since there isn't donor_type field in API
 export const categorizeFundingData = (data) => {
   const categorized = data.map((item, index) => {
-    const ngo = donorCategories.ngo.includes(item.donor);
+    const donor = (item.donor ?? "").toLowerCase()
+    const ngo = donorCategories.ngo.map(item => item.toLowerCase()).includes(donor);
     if (ngo) item.donor_type = categories[0];
 
-    const privateOrg = donorCategories.private.includes(item.donor);
+    const privateOrg = donorCategories.private.map(item => item.toLowerCase()).includes(donor);
     if (privateOrg) item.donor_type = categories[1];
 
-    const ing = donorCategories.ing.includes(item.donor);
+    const ing = donorCategories.ing.map(item => item.toLowerCase()).includes(donor);
     if (ing) item.donor_type = categories[2];
 
     return item;
@@ -118,7 +130,6 @@ export const getExpenditureSummary = (data) => {
     if (expendingBodies.indexOf(item.expending_body) === -1)
       expendingBodies.push(item.expending_body);
 
-    // expenditureTypes.forEach((exp) => {
     if (categories.indexOf(exp) === -1) categories.push(exp);
     if (funds.indexOf(fundSource) === -1) funds.push(fundSource);
 
@@ -129,7 +140,6 @@ export const getExpenditureSummary = (data) => {
     if (totals[exp] && isNumber) {
       totals[exp] = +totals[exp] + +item.amount_expended;
     }
-    // });
   });
 
   var keys = Object.keys(totals);

@@ -22,3 +22,10 @@
     height: 84px;
   }
 }
+
+.in-kind-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
+}
