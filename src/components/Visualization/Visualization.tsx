@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import Aid from "../Aid/Aid";
 import { CategoryTab, TabItem } from "../CategoryTab/CategoryTab";
-import { Expenditure } from "../Expenditure/Expenditure";
+import Expenditure from "../Expenditure/Expenditure";
 import InKind from "../InKind/InKind";
 
 import "./Visualization.scss";

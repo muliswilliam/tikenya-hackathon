@@ -1,17 +1,12 @@
 import React, { Component } from "react";
-import { ExpenditurePieChart } from "./ExpenditurePieChart";
+import ExpenditurePieChart, { PieChartItem } from "./ExpenditurePieChart";
 
-interface PieChartItem {
-  name: string;
-  value: number;
-}
-
-interface ExpenditureNationalProps {
+interface ExpenditureGroupProps {
   menuItemName: string;
   pieChartData: PieChartItem[];
 }
 
-export class ExpenditureNational extends Component<ExpenditureNationalProps> {
+export class ExpenditureGroup extends Component<ExpenditureGroupProps> {
   render() {
     const { pieChartData, menuItemName } = this.props;
 

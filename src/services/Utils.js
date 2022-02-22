@@ -119,7 +119,7 @@ export const getExpenditureSummary = (data) => {
   const categories = [];
   const expendingBodies = [];
   const totals = {};
-  const funds = [];
+  const fundSources = [];
 
   data.forEach((item) => {
     // var expenditureTypes = item.expenditure_types;
@@ -131,7 +131,7 @@ export const getExpenditureSummary = (data) => {
       expendingBodies.push(item.expending_body);
 
     if (categories.indexOf(exp) === -1) categories.push(exp);
-    if (funds.indexOf(fundSource) === -1) funds.push(fundSource);
+    if (fundSources.indexOf(fundSource) === -1) fundSources.push(fundSource);
 
     if (!totals[exp] && isNumber) {
       totals[exp] = item.amount_expended;
@@ -155,7 +155,7 @@ export const getExpenditureSummary = (data) => {
     categories,
     totals: _totals,
     expendingBodies,
-    funds: funds[0],
+    fundSources,
   };
 };
 

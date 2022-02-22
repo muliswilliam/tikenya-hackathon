@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 
 import { MenuItem, SideMenu } from '../Sidemenu/SideMenu';
-import { ExpenditureNational } from './ExpenditureNational';
-import { ExpenditureCounties } from './ExpenditureCounties';
-import {
-  getExpenditureSummary,
-  getExpenditureByBody,
-  getNationalGovernmentFunding,
-} from '../../services/Utils';
+import { ExpenditureGroup } from './ExpenditureGroup';
+import { getExpenditureSummary } from '../../services/Utils';
 
 import './Expenditure.scss';
+import useSWR from 'swr';
+import Loader from '../Loader';
+import ExpenditurePieChart, { PieChartItem } from './ExpenditurePieChart';
 
 export interface ExpenditureProps {}
 
@@ -23,120 +21,77 @@ export interface State {
   countyGovtReceipt: number;
 }
 
-export class Expenditure extends Component<ExpenditureProps, State> {
-  constructor(props: ExpenditureProps) {
-    super(props);
+const fetcher = () =>
+  fetch(
+    'https://actionfortransparency.org/wp-json/wp/v2/covid19_expenditure'
+  ).then((res) => res.json());
 
-    this.state = {
-      loading: true,
-      menuItems: [],
-      activeMenuItemId: 0,
-      expenditureData: [],
-      summary: {},
-      nationalGovtFunding: 0,
-      countyGovtReceipt: 0,
-    };
-  }
-
-  componentDidMount() {
-    fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_expenditure')
-      .then((response) => response.json())
-      .then((data) => {
-        const summary = getExpenditureSummary(data);
-        this.setState({
-          loading: false,
-          expenditureData: data,
-          summary: summary,
-          menuItems: this.createMenuItems(summary.expendingBodies),
-        });
-      });
-
-    fetch('https://actionfortransparency.org/wp-json/wp/v2/covid19_aid')
-      .then((response) => response.json())
-      .then((data) => {
-        const nationalGovtFunding = getNationalGovernmentFunding(data);
-        const countyGovtReceipt = 0.3 * nationalGovtFunding;
-
-        this.setState({ nationalGovtFunding, countyGovtReceipt });
-      });
-  }
-
-  createMenuItems = (expendingBodies: string[]) => {
-    return expendingBodies.map((body, index) => {
+const Expenditure = (props: ExpenditureProps) => {
+  const [loading, setLoading] = React.useState(false);
+  const [activeMenuItemId, setActiveMenuItemId] = React.useState(0);
+  const [pieChartData, setPieChartData] = React.useState<PieChartItem[]>([])
+  const { data: expenditureData, error } = useSWR(
+    '/covid/expenditure',
+    fetcher
+  );
+  
+  React.useEffect(() => {
+    if(expenditureData === undefined) return;
+    const filteredExp = expenditureData.filter((item: any) => item.source_of_fund === menuItemName)
+    const pieChartData: PieChartItem[] = filteredExp.map((item: any, index: number) => {
       return {
-        id: index,
-        name: body,
-      };
-    });
-  };
-
-  filterByExpendingBody = (body: string) => {
-    const { expenditureData } = this.state;
-
-    return getExpenditureByBody(expenditureData, body);
-  };
-
-  changeActiveMenuItem = (menuItemId: number) => {
-    this.setState({ activeMenuItemId: menuItemId });
-  };
-
-  renderActiveContent(activeMenuItemId: number, body: string) {
-    const { expenditureData, countyGovtReceipt, nationalGovtFunding } =
-      this.state;
-    const filteredData = getExpenditureByBody(expenditureData, body);
-    const summary = getExpenditureSummary(filteredData);
-
-    // if (body === "National Government") {
-    //   return (
-    //     <ExpenditureNational
-    //       menuItemName={body}
-    //       pieChartData={summary.totals}
-    //     />
-    //   );
-    // }
-
-    if (body === 'County Governments') {
-      return (
-        <ExpenditureCounties
-          menuItemName={body}
-          pieChartData={summary.totals}
-          nationalGovtFunding={nationalGovtFunding}
-          countyGovtReceipt={countyGovtReceipt}
-        />
-      );
-    } else {
-      return (
-        <ExpenditureNational
-          menuItemName={body}
-          pieChartData={summary.totals}
-        />
-      );
-    }
-  }
-
-  render() {
-    const { loading, menuItems, activeMenuItemId } = this.state;
-    if (loading) {
-      return <button className="button is-loading">Loading</button>;
-    }
-
-    const menuItemName = menuItems[activeMenuItemId].name;
-
+        name: item.expending_body,
+        y: parseInt(item.amount_expended),
+        selected: index === 0,
+        sliced: index === 0
+      }
+    })
+    setPieChartData(pieChartData)
+  }, [activeMenuItemId, expenditureData])
+  
+  if (!expenditureData && !error) {
     return (
-      <div className="columns">
-        <div className="column is-one-quarter">
-          <SideMenu
-            menuItems={menuItems}
-            activeMenuItem={activeMenuItemId}
-            changeActiveMenuItem={this.changeActiveMenuItem}
-          ></SideMenu>
-        </div>
-        <div className="column is-three-quarters">
-          <div className="visualization__chart-area">
-            {this.renderActiveContent(activeMenuItemId, menuItemName)}
-          </div>
-        </div>
+      <div className="loader-container">
+        <Loader width={100} height={100} />
       </div>
     );
   }
-}
+
+  const { fundSources, expendingBodies, totals } = getExpenditureSummary(expenditureData)
+  const menuItems = fundSources
+    .map((item: any, index: number) => {
+      return {
+        id: index,
+        name: item,
+      };
+    });
+
+  if (loading) {
+    return <button className="button is-loading">Loading</button>;
+  }
+
+  const menuItemName = menuItems[activeMenuItemId].name
+  
+  return (
+    <div className="columns">
+      <div className="column is-one-quarter">
+        <SideMenu
+          menuItems={menuItems}
+          activeMenuItem={activeMenuItemId}
+          changeActiveMenuItem={(menuItemId) => setActiveMenuItemId(menuItemId)}
+        ></SideMenu>
+      </div>
+      <div className="column is-three-quarters">
+        <div className="visualization__chart-area">
+          <ExpenditurePieChart
+            menuItemName={menuItemName}
+            pieChartData={pieChartData}
+            showTotal={true}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Expenditure;

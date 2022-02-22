@@ -11,7 +11,7 @@ export interface MenuItem {
 export interface MenuProps {
   menuItems: MenuItem[];
   activeMenuItem: number;
-  changeActiveMenuItem: Function;
+  changeActiveMenuItem: (menuItemId: number) => void;
 }
 
 export interface State {}
