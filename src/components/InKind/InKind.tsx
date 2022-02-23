@@ -25,7 +25,7 @@ const InKind = (props: InKindProps) => {
         const [itemName, itemCount ] = donated_items.split(":")
 
         return (
-          <div key={id} className="column is-3 is-2-widescreen is-3-fullhd mt-3">
+          <div key={id} className="column is-4 mt-3">
             <InKindCard
               title={title.rendered}
               donor={donor}
