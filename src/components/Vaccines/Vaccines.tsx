@@ -43,10 +43,10 @@ const Vaccines = () => {
     )
   }
   
-  const menuItems: MenuItem[] = (vaccinesData || [])
-  .map((vaccine: any) => vaccine.vaccine_type[0])
-  .filter((value: any, index: number, self: any[]) => self.indexOf(value) === index)
-  .map((item: string, index: number) => ({ id: index, name: item}));
+  const menuItems: MenuItem[] = vaccinesData
+    .map((vaccine: any) => vaccine.vaccine_type[0])
+    .filter((value: any, index: number, self: any[]) => self.indexOf(value) === index)
+    .map((item: string, index: number) => ({ id: index, name: item}));
   
   const vaccineName = !isLoading ? menuItems[activeMenuItemId].name : '';
 
