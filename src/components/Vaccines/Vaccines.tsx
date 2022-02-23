@@ -43,12 +43,18 @@ const Vaccines = () => {
     )
   }
   
-  const menuItems: MenuItem[] = vaccinesData
-    .map((vaccine: any) => vaccine.vaccine_type[0])
-    .filter((value: any, index: number, self: any[]) => self.indexOf(value) === index)
-    .map((item: string, index: number) => ({ id: index, name: item}));
+  let menuItems: MenuItem[] =[];
+  if(vaccinesData !== undefined) {
+    menuItems = vaccinesData
+      .map((vaccine: any) => vaccine.vaccine_type[0])
+      .filter((value: any, index: number, self: any[]) => self.indexOf(value) === index)
+      .map((item: string, index: number) => ({ id: index, name: item}));
+  }
   
-  const vaccineName = !isLoading ? menuItems[activeMenuItemId].name : '';
+  let vaccineName = '';
+  if(menuItems.length > 0) {
+    vaccineName = menuItems[activeMenuItemId].name;
+  }
 
   return (
     <div className="columns">
