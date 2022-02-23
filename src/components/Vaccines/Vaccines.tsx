@@ -48,7 +48,7 @@ const Vaccines = () => {
   .filter((value: any, index: number, self: any[]) => self.indexOf(value) === index)
   .map((item: string, index: number) => ({ id: index, name: item}));
   
-  const vaccineName = menuItems[activeMenuItemId].name
+  const vaccineName = !isLoading ? menuItems[activeMenuItemId].name : '';
 
   return (
     <div className="columns">
