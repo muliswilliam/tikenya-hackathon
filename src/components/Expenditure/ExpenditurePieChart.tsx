@@ -1,16 +1,5 @@
-import React from 'react';
-import Highcharts, { DataOptions } from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
 import { formatAmount } from "../../services/Utils";
-
-const tickStyles = {
-  fill: "#073b4c",
-  fontSize: 18,
-  fontWeight: 500,
-  fontFamily: "Roboto",
-};
-
-const COLORS = ["#18D8A6", "#1185B2", "#FACE61", "#093B4C"];
+import PieChart from '../shared/PieChart';
 
 export interface PieChartItem {
   name: string;
@@ -31,45 +20,6 @@ const calculateTotal = (pieChartData: PieChartItem[]) => {
 const ExpenditurePieChart = (props: ExpenditurePieChartProps) => {
   const { pieChartData, menuItemName, showTotal } = props;
   const totalDisbursed = calculateTotal(pieChartData);
-  const chartComponentRef = React.useRef<HighchartsReact.RefObject>(null);
-  const options: Highcharts.Options = {
-    chart: {
-      plotBorderWidth: 0,
-      type: 'pie',
-      backgroundColor: 'transparent'
-    },
-    title: {
-      text: ''
-    },
-    tooltip: {
-      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-      point: {
-        valueSuffix: '%'
-      }
-    },
-    plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: 'pointer',
-        borderColor: 'transparent',
-        borderWidth: 0,
-        dataLabels: {
-          enabled: true,
-          format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-        }
-      }
-    },
-    series: [
-      { type: 'pie'},
-      { data: [
-        ...pieChartData
-      ],
-      type: 'pie'
-    }
-    ]
-  };
 
   return (
     <div>
@@ -92,13 +42,7 @@ const ExpenditurePieChart = (props: ExpenditurePieChartProps) => {
           </div>
         )}
       </div>
-      <figure className="highcharts-figure">
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={options}
-          ref={chartComponentRef}
-        />
-      </figure>
+      <PieChart data={pieChartData}/>
     </div>
   );
 };

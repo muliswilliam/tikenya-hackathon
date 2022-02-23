@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import Tab from "../Tab";
+import Tab from "../shared/Tab";
 import "./CategoryTab.scss";
 
 export interface TabItem {
@@ -28,7 +28,7 @@ export class CategoryTab extends Component<CategoryTabProps, State> {
 
     return (
       <div className="category-tab">
-        <div className="tabs is-centered">
+        <div className="tabs is-small is-centered">
           <ul>
             {this.props.tabList.map((tab: TabItem) => (
               <Tab

@@ -6,7 +6,7 @@ import useSWR from 'swr';
 // Components
 import Header from './components/Header/Header';
 import Visualization from './components/Visualization/Visualization';
-import Loader from './components/Loader';
+import Loader from './components/shared/Loader';
 
 // Utils
 import { calculateTotalAid, formatNumber } from './services/Utils';

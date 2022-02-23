@@ -6,7 +6,7 @@ import { getExpenditureSummary } from '../../services/Utils';
 
 import './Expenditure.scss';
 import useSWR from 'swr';
-import Loader from '../Loader';
+import Loader from '../shared/Loader';
 import ExpenditurePieChart, { PieChartItem } from './ExpenditurePieChart';
 
 export interface ExpenditureProps {}
@@ -27,13 +27,13 @@ const fetcher = () =>
   ).then((res) => res.json());
 
 const Expenditure = (props: ExpenditureProps) => {
-  const [loading, setLoading] = React.useState(false);
   const [activeMenuItemId, setActiveMenuItemId] = React.useState(0);
   const [pieChartData, setPieChartData] = React.useState<PieChartItem[]>([])
   const { data: expenditureData, error } = useSWR(
     '/covid/expenditure',
     fetcher
   );
+  const isLoading = !expenditureData && !error
   
   React.useEffect(() => {
     if(expenditureData === undefined) return;
@@ -49,7 +49,7 @@ const Expenditure = (props: ExpenditureProps) => {
     setPieChartData(pieChartData)
   }, [activeMenuItemId, expenditureData])
   
-  if (!expenditureData && !error) {
+  if (isLoading) {
     return (
       <div className="loader-container">
         <Loader width={100} height={100} />
@@ -57,18 +57,12 @@ const Expenditure = (props: ExpenditureProps) => {
     );
   }
 
-  const { fundSources, expendingBodies, totals } = getExpenditureSummary(expenditureData)
+  const { fundSources } = getExpenditureSummary(expenditureData)
   const menuItems = fundSources
-    .map((item: any, index: number) => {
-      return {
-        id: index,
-        name: item,
-      };
-    });
-
-  if (loading) {
-    return <button className="button is-loading">Loading</button>;
-  }
+    .map((item: any, index: number) => ({
+      id: index,
+      name: item,
+    }));
 
   const menuItemName = menuItems[activeMenuItemId].name
   

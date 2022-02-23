@@ -18,12 +18,9 @@
     font-size: 26px;
   }
 
-  &__chart-area {
-  }
-
   &__tab-content {
     background-color: #ecf9fd;
-    min-height: 500px;
+    height: calc(100vh - 280px);
     padding: 10px;
   }
 }

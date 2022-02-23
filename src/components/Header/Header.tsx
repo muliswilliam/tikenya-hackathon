@@ -4,7 +4,7 @@ import "./Header.scss";
 
 interface HeaderProps {
   loading: boolean;
-  totalAid: number;
+  totalAid: string;
   totalCases: number;
   totalDeaths: number;
   totalRecovered: number

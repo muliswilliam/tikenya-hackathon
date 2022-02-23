@@ -21,11 +21,11 @@ const InKind = (props: InKindProps) => {
   return (
     <div className="columns is-centered">
       {donations.map(donation => {
-        const { donor, title, content, link, date_pledged, donated_items } = donation;
+        const { id, donor, title, content, link, date_pledged, donated_items } = donation;
         const [itemName, itemCount ] = donated_items.split(":")
 
         return (
-          <div className="column is-2 mt-3">
+          <div key={id} className="column is-3 is-2-widescreen is-3-fullhd mt-3">
             <InKindCard
               title={title.rendered}
               donor={donor}
