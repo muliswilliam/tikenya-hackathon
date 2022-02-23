@@ -5,7 +5,7 @@ import Loader from "../shared/Loader";
 import Timeline from "../shared/Timeline";
 import { MenuItem, SideMenu } from "../Sidemenu/SideMenu";
 
-const fetcher = () => fetch('http://actionfortransparency.org/wp-json/wp/v2/covid_vaccine').then(res => res.json())
+const fetcher = () => fetch('https://actionfortransparency.org/wp-json/wp/v2/covid_vaccine').then(res => res.json())
 
 const Vaccines = () => {
   const [activeMenuItemId, setActiveMenuItemId] = React.useState(0)
